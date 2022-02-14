@@ -1,0 +1,6 @@
+# env files/dirs
+.env
+.venv
+
+# VS Code
+.vscode
