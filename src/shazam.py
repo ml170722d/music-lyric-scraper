@@ -1,4 +1,5 @@
 import argparse
+from ast import parse
 import os
 
 from shazamLyric import *
@@ -154,6 +155,8 @@ def handle(args) -> None:
         _i = args.input
         _q = args.query
 
+        _c = args.collection
+
         shazam = Shazam()
         song = None
 
@@ -162,15 +165,35 @@ def handle(args) -> None:
             lines = file_input.readlines()
 
             for line in lines:
-                song = shazam.get_song_info(line, _l)
-                do(song, _t, _o)
+                try:
+                    song = shazam.get_song_info(line, _l)
+                    do(song, _t, _o)
+                except Exception as e:
+                    print(e)
 
             file_input.close()
             return
 
         if _q is not None:
-            song = shazam.get_song_info(_q, _l)
-            do(song, _t, _o)
+            try:
+                song = shazam.get_song_info(_q, _l)
+                do(song, _t, _o)
+            except Exception as e:
+                print(e)
+            return
+
+        if _c is not None:
+            file_location = os.getcwd() + "\\collection.txt"
+            output_file = open(file_location, 'w')
+
+            for (root, dirs, files) in os.walk(_c):
+                for file in files:
+                    filename = file.split('.')[0]
+                    output_file.write(filename)
+                    output_file.write('\n')
+
+            output_file.close()
+            print('Result is on parh {}'.format(file_location))
             return
 
     except Exception as e:
@@ -198,6 +221,9 @@ def set_up() -> str:
 
     parser.add_argument('-o', '--output', dest='output', metavar='file',
                         type=str, help='Output directory', default='lyrics')
+
+    parser.add_argument('-c', '--collect', dest='collection', metavar='root',
+                        type=str, help='Root directory for collectiong song names and/or artists')
 
     args = parser.parse_args()
 
