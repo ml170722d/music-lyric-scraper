@@ -38,7 +38,7 @@ class Formatter:
 
     def open(self, file_name: str) -> None:
         self.file_name = file_name
-        self.file = open(file_name, 'w')
+        self.file = open(file_name, 'w', encoding='utf-8')
         pass
 
     def close(self) -> None:
